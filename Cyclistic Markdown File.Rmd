@@ -1,0 +1,365 @@
+---
+title: "Cyclistic Bike-Share Report"
+author: "Esther Odiri Metieh"
+date: '2022-04-07'
+output: html_document
+---
+
+# Cyclistic Bike-Share Analysis 
+#### Google Capstone Project (Case study)
+
+**Introduction**
+As a junior data analyst in the marketing team at the fictitious bike share company, Cyclistic, I am required to understand how casual riders and annual members use Cyclistic bikes differently. The insights generated from this analysis would help my team design effective marketing strategies that would spur the conversion of casual riders to annual paying members. 
+
+
+```{r setup, installing packages}
+knitr::opts_chunk$set(echo = TRUE)
+
+install.packages("tidyverse")
+install.packages("lubridate")
+install.packages("ggplot2")
+install.packages("dplyr")
+
+library(tidyverse)
+library(lubridate)
+library(ggplot2)
+library(dplyr)
+```
+
+
+
+Now, we begin by loading all 12 csv files to be used for this analysis
+
+```{r Loading data files}
+getwd() #this shows my current working directory as "G:/My Drive/Google Data Analytics Docs/Cyclistic Dataset"
+
+```
+
+#=====================
+# STEP 1: COLLECT DATA
+#=====================
+```{r, loading dataset}
+library(readr)
+# Clicked on the "import dataset" button to generate the file path below
+January <- read_csv("~/Cyclistic_Divvy_Dataset/202101-divvy-tripdata.csv")
+February <- read.csv("~/Cyclistic_Divvy_Dataset/202102-divvy-tripdata.csv")
+March <- read.csv("~/Cyclistic_Divvy_Dataset/202103-divvy-tripdata.csv")
+April <- read.csv("~/Cyclistic_Divvy_Dataset/202104-divvy-tripdata.csv")
+May <- read.csv("~/Cyclistic_Divvy_Dataset/202105-divvy-tripdata.csv")
+June <- read.csv("~/Cyclistic_Divvy_Dataset/202106-divvy-tripdata.csv")
+July <- read.csv("~/Cyclistic_Divvy_Dataset/202107-divvy-tripdata.csv")
+August <- read.csv("~/Cyclistic_Divvy_Dataset/202108-divvy-tripdata.csv")
+September <- read.csv("~/Cyclistic_Divvy_Dataset/202109-divvy-tripdata.csv")
+October <- read.csv("~/Cyclistic_Divvy_Dataset/202110-divvy-tripdata.csv")
+November <- read.csv("~/Cyclistic_Divvy_Dataset/202111-divvy-tripdata.csv")
+December <- read.csv("~/Cyclistic_Divvy_Dataset/202112-divvy-tripdata.csv")
+```
+
+#====================================================
+# STEP 2: WRANGLE DATA AND COMBINE INTO A SINGLE FILE
+#====================================================
+
+##  Renaming Columns
+
+Here, we would rename some of the columns for easy access and consistency
+
+```{r, renaming columns}
+January <- January %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+February <- February %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+March <- March %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+April <- April %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+May <- May %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+June <- June %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+July <- July %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+August <- August %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+September <- September %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+October <- October %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+November <- November %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+
+December <- December %>% rename(bike_id = ride_id, bike_type = rideable_type, start_time = started_at, end_time = ended_at, name_start_station = start_station_name, id_start_station = start_station_id, name_end_station = end_station_name, id_end_station = end_station_id, usertype = member_casual)
+```
+## Checking Datatypes
+
+Now, we use glimpse() to check the data type of columns in each dataframe
+```{r, checking datatype}
+glimpse(January) #all the way to
+glimpse(December)
+```
+## Converting Datatypes
+
+Here we would convert data types for some variables into characters so they can stack correctly
+```{r, converting datatype}
+January <- January %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+February <- February %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+March <- March %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+April <- April %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+May <- May %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+June <- June %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+July <- July %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+August <- August %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+September <- September %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+October <- October %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+November <- November %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+
+December <- December %>% 
+  mutate(start_time = as.character(start_time)) %>% 
+  mutate(end_time = as.character(end_time)) %>% 
+  mutate(ride_length = as.character(ride_length))
+```
+
+## Merging Dataframes
+Now, it's time to merge all 12 dataframes into one big dataframe
+
+```{r, stacking data}
+Year2021_Trips <- bind_rows(January, February, March, April, May, June, July, August, September, October, November, December)
+```
+## Exploring the dataframe
+Now we use some functions to understand our new dataframe
+```{r}
+head(Year2021_Trips, 10) #shows the first 10 rows
+dim(Year2021_Trips) #to know the number of observations and variables
+str(Year2021_Trips) # shows a summary of the dataframe
+unique(Year2021_Trips$bike_type) # shows distinct values of bike types
+summary(Year2021_Trips) #statistical summary of the data
+```
+
+
+##======================================================
+## STEP 3: CLEAN UP AND ADD DATA TO PREPARE FOR ANALYSIS
+##======================================================
+
+## Deleting Unnecessary Columns
+
+Here, we will be deleting columns that are irrelevant to the analysis
+
+```{r}
+Year2021_Trips <- Year2021_Trips %>% 
+  select(-c(start_lat, start_lng, end_lat, end_lng))
+```
+
+## Creating New Columns
+Here, we are creating new columns for date, weekday, and month to provide further insights for the analysis by extracting them from the "start_time" variable
+
+```{r}
+Year2021_Trips <- Year2021_Trips %>% 
+  mutate(month = month(start_time, label = TRUE, abbr = TRUE))
+
+Year2021_Trips <- Year2021_Trips %>% 
+    mutate(weekday = wday(start_time, label = TRUE, abbr = TRUE))
+
+  Year2021_Trips <- Year2021_Trips %>% 
+  mutate(date = as.Date(dmy_hms(Year2021_Trips$start_time))) #this code extracts the date's year from "start_time as 2020 instead of 2021, I'm unsure why
+  
+  Year2021_Trips <- Year2021_Trips %>% 
+    mutate(year = year(start_time))
+```
+## Converting "ride_length" from character to period/numeric
+
+The ride_length column shows the difference between the end_time and start_time of each bike trip. We could have used difftime() to find the ride_length of each observation, but this was already done in Excel (D2-C2). 
+
+```{r}
+Year2021_Trips$ride_length <- lubridate::as.period(Year2021_Trips$ride_length, unit = "seconds") #default unit is in mins
+
+```
+
+
+## Removing "bad" Data
+Here, we would create a new dataframe(v2) which will be a modified version of Year2021_Trips. Data entries when bikes were taken out of docks for repair, and the ones with negative ride lengths will be removed
+
+```{r}
+Year2021_Trips_v2 <- Year2021_Trips[!(Year2021_Trips$name_start_station == "HQ QR" | Year2021_Trips$ride_length< 0),]
+```
+Removing NA rows
+```{r}
+Year2021_Trips_v2 <- Year2021_Trips_v2 %>% 
+  na.omit() # deleted 13470 rows
+```
+Checking for negative ride_length values. 
+```{r}
+#sum(Year2021_Trips_v2$ride_length < 0)
+#sum(Year2021_Trips_v2$ride_length < 0, na.rm = TRUE)
+#sum(is.na(Year2021_Trips_v2$ride_length))
+# All functions returned a value of 0 which shows that there were no negative ride_length values
+```
+
+#=====================================
+# STEP 4: CONDUCT DESCRIPTIVE ANALYSIS
+#=====================================
+
+## Descriptive analysis of ride_length(all figures in seconds)
+
+Now, we would calculate the mean, median, max and min values of ride_length. Individually, we have;
+
+```{r}
+mean(Year2021_Trips_v2$ride_length) #average length of rides
+median(Year2021_Trips_v2$ride_length) #midpoint value of ride lengths in asc order
+max(Year2021_Trips_v2$ride_length) #longest ride
+min(Year2021_Trips_v2$ride_length) #shortest ride
+```
+Collectively, we can just use summary().
+
+```{r}
+summary(Year2021_Trips_v2$ride_length)
+```
+
+## Compare annual members and casual users
+
+First, let us count the number of members and casual riders
+```{r}
+table(Year2021_Trips_v2$usertype)
+# Casual - 2525519 
+# Member - 3056074 
+```
+We can see that there are more annual paying members than casual riders. Next, we'll check for the bike types available in the dataset, then count the number of each bike type.
+
+```{r}
+unique(Year2021_Trips_v2$bike_type) # shows the distinct bike types available
+table(Year2021_Trips_v2$bike_type)
+# classic_bike   docked_bike electric_bike 
+ #     3250658        312338       2018597
+```
+
+Second, we'll compare the mean, median, max, min ride_length of both usertypes
+
+```{r}
+aggregate(Year2021_Trips_v2$ride_length ~ Year2021_Trips_v2$usertype, FUN = summary) 
+```
+The above code chunk shows that casual riders have a higher average ride length that annual members.
+
+## Average ride length for each day by usertype
+
+```{r}
+aggregate(Year2021_Trips_v2$ride_length ~ Year2021_Trips_v2$usertype + Year2021_Trips_v2$weekday, FUN = mean) # showed the weekdays with their average ride lengths according to usertype.
+```
+
+## Analyze ridership data by usertype and weekday
+
+```{r}
+Year2021_Trips_v2 %>% 
+  mutate(weekday = wday(start_time, label = TRUE)) %>% 
+  group_by(usertype, weekday) %>% 
+  summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(usertype, weekday)
+```
+The above codes chunk shows that members took more rides, which were of shorter time duration as opposed the casual riders who took less rides, but of longer duration.
+
+## Visualizing the Data
+
+Visualizing the count of usertype
+```{r}
+ggplot(data = Year2021_Trips_v2) + geom_bar(mapping = aes(x = usertype, fill = usertype)) + labs(title = "Count of Usertype", x = "Usertype", y = "Count")
+```
+
+Let us visualize the number of rides by usertype
+```{r, visualizing the data}
+Year2021_Trips_v2 %>% 
+  mutate(weekday = wday(start_time, label = TRUE)) %>% 
+  group_by(usertype, weekday) %>% 
+  summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(usertype, weekday) %>% 
+  ggplot(aes(x = weekday, y = number_of_rides, fill = usertype)) + geom_col(position = "dodge") + labs(title = "Number of Rides", x ="Weekdays", y = "Count")
+```
+
+Visualizing the average duration 
+
+```{r}
+Year2021_Trips_v2 %>% 
+  mutate(weekday = wday(start_time, label = TRUE)) %>% 
+  group_by(usertype, weekday) %>% 
+  summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>% 
+  arrange(usertype, weekday) %>% 
+  ggplot(aes(x = weekday, y = average_duration, fill = usertype)) + geom_col(position = "dodge") + labs(title = "Average Ride Duration", x = "Weekdays", y = "Average Duration (sec)")
+```
+Visualizing the biketype usage according to usertype
+```{r}
+ggplot(data = Year2021_Trips_v2) + geom_bar(mapping = aes(x = bike_type, fill = bike_type)) + facet_wrap(~usertype) + labs(title = "Number of Bike Type Usage", x = "Bike type", y = "Count") + theme(axis.text.x = element_text(angle = 90))
+```
+
+Visualizing the number of rides per month according to usertype
+```{r}
+ggplot(data = Year2021_Trips_v2) + geom_bar(mapping = aes(x = month, fill = month))  + labs(title = "Rides Per Month", x = "Months", y = "Count") + facet_wrap(~usertype)
+# geom_col requires a y variable, but a geom bar doesn't require the input of a y variable
+```
+
+Visualizing the number of rides per day according to usertype
+```{r}
+ggplot(data = Year2021_Trips_v2) + geom_bar(mapping = aes(x = weekday, fill = weekday)) + facet_wrap(~usertype) + labs(title = "Ride Count per Weekday", x = "Weekdays", y = "Count")
+```
+
+
+#=================================================
+# STEP 5: EXPORT SUMMARY FILE FOR FURTHER ANALYSIS
+#=================================================
+
+Now we would create a .csv file that we can import and visualize in Excel or Tableau
+```{r}
+write.csv(Year2021_Trips_v2, "~/Cyclistic_Divvy_Dataset/Year2021_Trips_v2.csv")
+```
+"Year2021_Trips_v2.csv" successfully created! Further data visualization such as creating a dashboard would be done in Tableau as the csv file is too large for the Excel grid.
+
+# **Insights derived from the analysis**
+
+* Members who have annual subscriptions with Cyclistic are taking a higher number of bike rides than casual riders. This may probably be due to the fact that there are more members than casual riders at Cyclistic. However, these rides are significantly shorter in time duration when compared to the bike rides taken by casuals. The ratio of the number of rides and mean ride duration between members and casuals can be said to be about 2:1 respectively. 
+
+* The classic bikes are the most used types of bike among both casual riders and members, followed by the electric bikes, then the docked bikes. While a good number of casual riders make use of the docked bikes, annual members are shown to not utilize that particular bike type at all.
+
+* The top three ride months for casual riders are July, August, September (summer months). This could explain the long ride duration as casual riders may be using these bikes to embark on summer holiday biking trips, hence the duration. Members, on the other hand, have little variation in bike usage from June to October. However, the months of August and September have the highest usage which may mean that **some** members could also be taking those holiday bike trips in the summer, and continue using them as regularly afterwards to and fro work, school or any engagement.
+
+## **Recommendation**
+
+The main business task after understanding the insights generated as to how casual riders and annual members use Cyclistic bikes differently, is to proffer marketing strategies on how more casual riders can be converted to annual paying members.
+My suggestion is to offer a discount that is capped at a certain ride duration and is **exclusive to annual members only**. For example, a member who takes a bike ride with a total ride length of 20mins and above in a day would be entitled to a free ride the next day. This could run as a promo for starters. Since the analysis has shown that casual riders take longer rides, this category of people will surely appreciate a free ride and could consider becoming annual paying members. Consequently, this could also encourage existing annual members to take longer rides.
+
