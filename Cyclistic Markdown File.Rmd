@@ -41,7 +41,7 @@ getwd() #this shows my current working directory as "G:/My Drive/Google Data Ana
 ```{r, loading dataset}
 library(readr)
 # Clicked on the "import dataset" button to generate the file path below
-January <- read_csv("~/Cyclistic_Divvy_Dataset/202101-divvy-tripdata.csv")
+January <- read.csv("~/Cyclistic_Divvy_Dataset/202101-divvy-tripdata.csv")
 February <- read.csv("~/Cyclistic_Divvy_Dataset/202102-divvy-tripdata.csv")
 March <- read.csv("~/Cyclistic_Divvy_Dataset/202103-divvy-tripdata.csv")
 April <- read.csv("~/Cyclistic_Divvy_Dataset/202104-divvy-tripdata.csv")
